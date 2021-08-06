@@ -14,10 +14,10 @@ export class MazeVisualizer extends React.Component {
     }
 
     componentDidMount() {
-        this.resetMaze();
+        this.createMaze();
     }
 
-    resetMaze = () => {
+    createMaze = () => {
         const maze = [];
         for (let row = 0; row < 20; row++) {
             for(let col = 0; col < 40; col++){
@@ -27,11 +27,25 @@ export class MazeVisualizer extends React.Component {
         this.setState({maze: maze});
     }
 
+    resetMaze = () => {
+        const maze = this.state.maze;
+        for(let i = 0; i < maze.length; i++){
+            const square = maze[i];
+            document.getElementById(`square-${square.row}-${square.col}`).classList.remove("square-visited");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.add("wall-top");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.add("wall-bottom");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.add("wall-left");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.add("wall-right");
+            square.isVisited = false;
+        }
+    }
+
     createSquare = (row, col) => {
         return(
             {
                 row,
                 col,
+                isVisited: false,
             }
         );
     }
@@ -39,19 +53,18 @@ export class MazeVisualizer extends React.Component {
     depthFirstSearch = () => {
         const maze = this.state.maze;
         mazeAlgorithms.depthFirstSearch(maze);
+        //const orderTraversed = mazeAlgorithms.depthFirstSearch(maze);
+        //this.animate(orderTraversed);
     }
 
-    animate = () => {
-        const maze = this.state.maze;
-        for(let i = 0; i < maze.length; i++){
-            setTimeout(() =>{
-                const square = maze[i];
-                // console.log(document.getElementById(`square-${square.row}-${square.col}`).className)
-                console.log(square.className);
-                 //= "square square-visited";
-            }, 10 * i);
-        }
-    }
+    // animate = (orderTraversed) => {
+    //     for(let i = 0; i < orderTraversed.length; i++){
+    //         setTimeout(() =>{
+    //             const square = orderTraversed[i];
+    //             document.getElementById(`square-${square.row}-${square.col}`).classList.add("square-visited");
+    //         }, 100 * i);
+    //     }
+    // }
 
     render() {
         const {maze} = this.state;
@@ -61,7 +74,6 @@ export class MazeVisualizer extends React.Component {
                 <header>
                     <button onClick={this.resetMaze}>Reset Maze</button>
                     <button onClick={this.depthFirstSearch}>Depth-First Search</button>
-                    <button onClick={this.animate}>Test Animation</button>
                 </header>
 
                 <div className="maze-container">
@@ -70,6 +82,7 @@ export class MazeVisualizer extends React.Component {
                             key={idx} 
                             row={square.row}
                             col={square.col}
+                            isVisited={square.isVisited}
                             ></Square>
                     ))}
                 </div>

@@ -8,13 +8,32 @@ header {
     line-height: 34px;
     width: 2vw;
     height: 2vw;
-    border: 2px solid white;
     margin: -1px;
     background-color: black;
 }
 
+.wall-top {
+    border-top: 1px solid white;
+}
+
+.wall-bottom {
+    border-bottom: 1px solid white;
+}
+
+.wall-right {
+    border-right: 1px solid white;
+}
+
+.wall-left {
+    border-left: 1px solid white;
+}
+
 .square-visited {
     background-color: red;
+}
+
+.square-current {
+    background-color: pink;
 }
 
 .maze-container {
