@@ -53,18 +53,12 @@ export class MazeVisualizer extends React.Component {
     depthFirstSearch = () => {
         const maze = this.state.maze;
         mazeAlgorithms.depthFirstSearch(maze);
-        //const orderTraversed = mazeAlgorithms.depthFirstSearch(maze);
-        //this.animate(orderTraversed);
     }
 
-    // animate = (orderTraversed) => {
-    //     for(let i = 0; i < orderTraversed.length; i++){
-    //         setTimeout(() =>{
-    //             const square = orderTraversed[i];
-    //             document.getElementById(`square-${square.row}-${square.col}`).classList.add("square-visited");
-    //         }, 100 * i);
-    //     }
-    // }
+    randomizedPrims = () => {
+        const maze = this.state.maze;
+        mazeAlgorithms.randomizedPrims(maze);
+    }
 
     render() {
         const {maze} = this.state;
@@ -74,6 +68,7 @@ export class MazeVisualizer extends React.Component {
                 <header>
                     <button onClick={this.resetMaze}>Reset Maze</button>
                     <button onClick={this.depthFirstSearch}>Depth-First Search</button>
+                    <button onClick={this.randomizedPrims}>Randomized Prim's</button>
                 </header>
 
                 <div className="maze-container">
