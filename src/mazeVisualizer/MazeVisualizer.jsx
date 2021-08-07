@@ -2,6 +2,7 @@ import React from "react";
 import './mazeStyle.css';
 import Square from "./Square";
 import * as mazeAlgorithms from "../mazeAlgorithms/mazeAlgorithms";
+import Slider from 'react-input-slider';
 
 export class MazeVisualizer extends React.Component {
     constructor(props) {
@@ -9,7 +10,7 @@ export class MazeVisualizer extends React.Component {
 
         this.state = {
             maze: [],
-            current: null,
+            x: 50,
         }
     }
 
@@ -31,7 +32,12 @@ export class MazeVisualizer extends React.Component {
         const maze = this.state.maze;
         for(let i = 0; i < maze.length; i++){
             const square = maze[i];
-            document.getElementById(`square-${square.row}-${square.col}`).classList.remove("square-visited");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.remove("square-visited-depth");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.remove("square-visited-prims");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.remove("square-visited-binary");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.remove("square-current-depth");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.remove("square-current-prims");
+            document.getElementById(`square-${square.row}-${square.col}`).classList.remove("square-current-binary");
             document.getElementById(`square-${square.row}-${square.col}`).classList.add("wall-top");
             document.getElementById(`square-${square.row}-${square.col}`).classList.add("wall-bottom");
             document.getElementById(`square-${square.row}-${square.col}`).classList.add("wall-left");
@@ -52,12 +58,24 @@ export class MazeVisualizer extends React.Component {
 
     depthFirstSearch = () => {
         const maze = this.state.maze;
-        mazeAlgorithms.depthFirstSearch(maze);
+        const speed = this.state.x;
+        mazeAlgorithms.depthFirstSearch(maze, speed);
     }
 
     randomizedPrims = () => {
         const maze = this.state.maze;
-        mazeAlgorithms.randomizedPrims(maze);
+        const speed = this.state.x;
+        mazeAlgorithms.randomizedPrims(maze, speed);
+    }
+
+    binaryTree = () => {
+        const maze = this.state.maze;
+        const speed = this.state.x;
+        mazeAlgorithms.binaryTree(maze, speed);
+    }
+
+    stopMaze = () => {
+        mazeAlgorithms.stopMaze();
     }
 
     render() {
@@ -67,8 +85,38 @@ export class MazeVisualizer extends React.Component {
             <>
                 <header>
                     <button onClick={this.resetMaze}>Reset Maze</button>
+                    <button onClick={this.stopMaze}>Stop Maze</button>
                     <button onClick={this.depthFirstSearch}>Depth-First Search</button>
                     <button onClick={this.randomizedPrims}>Randomized Prim's</button>
+                    <button onClick={this.binaryTree}>Binary Tree</button>
+                    <div>
+                        <div className="slider-title">
+                            Iteration Time
+                        </div>
+                        <div>
+                            <Slider
+                            axis="x"
+                            x={this.state.x}
+                            xmax="200"
+                            onChange={({ x }) => this.setState({ x: x })}
+                            styles={{
+                                track: {
+                                backgroundColor: 'white'
+                                },
+                                active: {
+                                backgroundColor: 'dodgerblue'
+                                },
+                                thumb: {
+                                width: 20,
+                                height: 20
+                                },
+                                disabled: {
+                                opacity: 0.5
+                                }
+                            }}></Slider>
+                        </div>
+                    </div>
+                    
                 </header>
 
                 <div className="maze-container">

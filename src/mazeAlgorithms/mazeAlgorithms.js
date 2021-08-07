@@ -1,13 +1,14 @@
 
 
-export const depthFirstSearch = maze => {
+export const depthFirstSearch = (maze, speed) => {
     const stack = [];
-    let current = maze[0];
+    let init = Math.floor(Math.random() * maze.length);
+    let current = maze[init];
     current.isVisited = true;
-    document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-visited");
+    document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-visited-depth");
     stack.push(current)
     let next = checkNeighbors(current, maze);
-    let nextCheck = setInterval(iterateDepthFirstSearch, 35);
+    window.mazeGen = setInterval(iterateDepthFirstSearch, speed);
         function iterateDepthFirstSearch(){
             if(next){
                 next.isVisited = true;
@@ -18,29 +19,30 @@ export const depthFirstSearch = maze => {
                 next = checkNeighbors(current, maze);
             }
             else if (stack.length > 0){
-                document.getElementById(`square-${current.row}-${current.col}`).classList.remove("square-current");
+                document.getElementById(`square-${current.row}-${current.col}`).classList.remove("square-current-depth");
                 current = stack.pop();
-                document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-current");
+                document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-current-depth");
                 next = checkNeighbors(current, maze);
                 
             }
             else {
-                document.getElementById(`square-${current.row}-${current.col}`).classList.remove("square-current");
-                clearInterval(nextCheck);
+                document.getElementById(`square-${current.row}-${current.col}`).classList.remove("square-current-depth");
+                clearInterval(window.mazeGen);
             }
         }
 }
 
-export const randomizedPrims = maze => {
+export const randomizedPrims = (maze, speed) => {
     const walls = [];
-    let current = maze[0];
+    let init = Math.floor(Math.random() * maze.length);
+    let current = maze[init];
     let last = current;
     current.isVisited = true;
-    document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-visited");
-    document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-current");
+    document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-visited-prims");
+    document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-current-prims");
     findWalls(current, walls, maze);
-    let wallsCheck = setInterval(iterateDepthFirstSearch, 35);
-        function iterateDepthFirstSearch(){
+    window.mazeGen = setInterval(iterateRandomPrims, speed);
+        function iterateRandomPrims(){
             if(walls.length > 0){
                 let random = Math.floor(Math.random() * walls.length);
                 let next = walls[random];
@@ -49,9 +51,9 @@ export const randomizedPrims = maze => {
                     removeWalls(current, next);
                     findWalls(next, walls, maze);
                     next.isVisited = true;
-                    document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-visited");
-                    document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-current");
-                    document.getElementById(`square-${last.row}-${last.col}`).classList.remove("square-current");
+                    document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-visited-prims");
+                    document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-current-prims");
+                    document.getElementById(`square-${last.row}-${last.col}`).classList.remove("square-current-prims");
                     last = next;
                 }
                 else{
@@ -61,19 +63,43 @@ export const randomizedPrims = maze => {
                     // document.getElementById(`square-${next.row}-${next.col}`).classList.remove("wall-left");
                 }
                 walls.splice(random, 1);
-                console.log(walls);
             }
             else {
-                document.getElementById(`square-${last.row}-${last.col}`).classList.remove("square-current");
-                clearInterval(wallsCheck);
+                document.getElementById(`square-${last.row}-${last.col}`).classList.remove("square-current-prims");
+                clearInterval(window.mazeGen);
             }
         }
 }
 
+export const binaryTree = (maze, speed) => {
+    let index = 0;
+    let current = maze[index];
+    current.isVisited = true;
+    document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-visited-binary");
+    document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-current-binary");
+    window.mazeGen = setInterval(iterateBinaryTree, speed);
+        function iterateBinaryTree(){
+            if(index < maze.length - 1){
+                let next = checkDirections(current, maze);
+                document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-visited-binary");
+                document.getElementById(`square-${current.row}-${current.col}`).classList.remove("square-current-binary");
+                removeWalls(current, next);
+                index++;
+                current = maze[index];
+                document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-current-binary");
+                document.getElementById(`square-${current.row}-${current.col}`).classList.add("square-visited-binary");
+            }
+            else{
+                document.getElementById(`square-${current.row}-${current.col}`).classList.remove("square-current-binary");
+                clearInterval(window.mazeGen);
+            }
+        }
+    }
+
 function handleColors(current, next) {
-    document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-visited");
-    document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-current");
-    document.getElementById(`square-${current.row}-${current.col}`).classList.remove("square-current");
+    document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-visited-depth");
+    document.getElementById(`square-${next.row}-${next.col}`).classList.add("square-current-depth");
+    document.getElementById(`square-${current.row}-${current.col}`).classList.remove("square-current-depth");
 }
 
 function checkNeighbors(current, maze) {
@@ -203,4 +229,25 @@ function checkWall(next, maze) {
     }
 
     return undefined;
+}
+
+function checkDirections(current, maze){
+    let right = maze[index(current.row, current.col + 1)];
+    let bottom = maze[index(current.row + 1, current.col)];
+
+    if(!right){
+        return bottom;
+    }
+    if(!bottom){
+        return right;
+    }
+    let rand = Math.floor(Math.random() * 2);
+    if(rand === 0){
+        return bottom
+    }
+    return right;
+}
+
+export const stopMaze = () => {
+    clearInterval(window.mazeGen);
 }
