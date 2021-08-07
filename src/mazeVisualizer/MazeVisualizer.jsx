@@ -91,7 +91,7 @@ export class MazeVisualizer extends React.Component {
                     <button onClick={this.binaryTree}>Binary Tree</button>
                     <div>
                         <div className="slider-title">
-                            Iteration Time
+                            Maze Generation Delay
                         </div>
                         <div>
                             <Slider
